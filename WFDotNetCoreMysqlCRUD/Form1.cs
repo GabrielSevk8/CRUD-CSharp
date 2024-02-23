@@ -20,6 +20,20 @@ namespace WFDotNetCoreMysqlCRUD
         public Form1()
         {
             InitializeComponent();
+
+            lst_contatos.View = View.Details;
+            lst_contatos.AllowColumnReorder = true;
+            lst_contatos.FullRowSelect = true;
+            lst_contatos.GridLines = true;
+
+            //colocando as informações na linha e coluna
+            lst_contatos.Columns.Add("ID", 30, HorizontalAlignment.Left);
+            lst_contatos.Columns.Add("Nome", 150, HorizontalAlignment.Left);
+            lst_contatos.Columns.Add("Email", 150, HorizontalAlignment.Left);
+            lst_contatos.Columns.Add("Telefone", 150, HorizontalAlignment.Left);
+
+            //chamando a função carregar contatos
+            CarregarContatos();
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -36,25 +50,41 @@ namespace WFDotNetCoreMysqlCRUD
         {
             try
             {
-                
+                   
 
                 // crias a conexão com mysql
                 Conexao = new MySqlConnection(data_source);
 
-                //executar o comando insert
-                string sql = $"INSERT INTO contato (nome,telefone,email) VALUE"+"('"+txtNome.Text+" ','"+txtTelefone.Text+" ','"+txtEmail.Text+" ')";
-
-
-                MySqlCommand comando = new MySqlCommand(sql, Conexao);
+                //abrir a conexão
                 Conexao.Open();
-                //executar comando sql
-                comando.ExecuteReader();
-                //informar mensagem caso tenha dado certo
-                MessageBox.Show("Cadastro inserido com sucesso!");
+
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = Conexao;
+
+                cmd.CommandText = "INSERT INTO contato(nome, telefone, email) VALUES (@nome,@telefone,@email)";
+
+                //definir os parametros que vão pro banco
+                cmd.Parameters.AddWithValue("@nome", txtNome.Text);
+                cmd.Parameters.AddWithValue("@telefone", txtTelefone.Text);
+                cmd.Parameters.AddWithValue("@email", txtEmail.Text);
+
+                cmd.Prepare();
+
+                cmd.ExecuteNonQuery();
+
+                //exibindo mensagem ao usuario
+                MessageBox.Show("Contato inserido com sucesso", "Sucesso",MessageBoxButtons.OK,MessageBoxIcon.Information);
+
+                txtNome.Text = string.Empty;
+                txtTelefone.Text = "";
+                txtEmail.Text = string.Empty;
+
+                CarregarContatos();
+                
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Erro Ocorreu: "+ex.Message,"Error: ", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             finally
             {
@@ -76,47 +106,114 @@ namespace WFDotNetCoreMysqlCRUD
         {
             try
             {
-                string q = " '%" + txt_buscar.Text + "%'";
+
+                /*
+                string q = " '%" + txt_buscar.Text + "%' ";
+
                 Conexao = new MySqlConnection(data_source);
 
-                string sql = "SELECT * FROM contato WHERE nome LIKE"+q+" OR email LIKE"+q;
+                string sql = "SELECT * FROM contato WHERE nome LIKE" + q + "OR email LIKE" + q;
                 //SELECT * FROM CONTATO WHERE NOME LIKE %JOSE%
 
-                MySqlCommand comando = new MySqlCommand(sql, Conexao);
                 Conexao.Open();
+
+                //executar comando
+                MySqlCommand comando = new MySqlCommand(sql, Conexao);
 
                 //usando o mysqldatareader para executar
                 MySqlDataReader reader = comando.ExecuteReader();
+                */
 
-                //após armazenar as informações de busca, vamos limpar o campo
+                Conexao = new MySqlConnection(data_source);
+                Conexao.Open();
+
+                MySqlCommand cmd = new MySqlCommand();
+
+                cmd.Connection = Conexao;
+
+                cmd.CommandText = "SELECT * FROM contato WHERE nome LIKE @q OR email LIKE @q";
+
+                cmd.Parameters.AddWithValue("@q", "%" + txt_buscar.Text + "%");
+
+                cmd.Prepare();
+
+                MySqlDataReader reader = cmd.ExecuteReader();
+
                 lst_contatos.Items.Clear();
+
 
                 while (reader.Read())
                 {
                     string[] row =
                     {
-                        reader.GetString(0),
+                        reader.GetInt16(0).ToString(),
                         reader.GetString(1),
                         reader.GetString(2),
                         reader.GetString(3),
                     };
 
-                    //criando elemento que será a linha
-                    var linhaListView = new ListViewItem(row);
-                    //pegando o listview e acrescentando a linha que acabamos de criar
-                    lst_contatos.Items.Add(linhaListView);
-
+                    lst_contatos.Items.Add(new ListViewItem(row));
                 }
 
+
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Erro Ocorreu: " + ex.Message, "Error: ", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
                 Conexao.Close();
             }
+        }
+
+        private void CarregarContatos()
+        {
+
+                Conexao = new MySqlConnection(data_source);
+                Conexao.Open();
+
+                MySqlCommand cmd = new MySqlCommand();
+
+                cmd.Connection = Conexao;
+
+                cmd.CommandText = "SELECT * FROM contato ORDER BY id desc";
+
+                cmd.Prepare();
+
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                lst_contatos.Items.Clear();
+
+
+            while (reader.Read())
+            {
+                string[] row =
+                {
+                        reader.GetInt16(0).ToString(),
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                    };
+
+                lst_contatos.Items.Add(new ListViewItem(row));
+
+            }
+                
+
+ 
+        }
+
+
+        private void lst_contatos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txt_buscar_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -111,6 +111,7 @@ namespace WFDotNetCoreMysqlCRUD
             this.lst_contatos.Size = new System.Drawing.Size(477, 165);
             this.lst_contatos.TabIndex = 7;
             this.lst_contatos.UseCompatibleStateImageBehavior = false;
+            this.lst_contatos.SelectedIndexChanged += new System.EventHandler(this.lst_contatos_SelectedIndexChanged);
             // 
             // txt_buscar
             // 
@@ -118,6 +119,7 @@ namespace WFDotNetCoreMysqlCRUD
             this.txt_buscar.Name = "txt_buscar";
             this.txt_buscar.Size = new System.Drawing.Size(385, 23);
             this.txt_buscar.TabIndex = 8;
+            this.txt_buscar.TextChanged += new System.EventHandler(this.txt_buscar_TextChanged);
             // 
             // label4
             // 
