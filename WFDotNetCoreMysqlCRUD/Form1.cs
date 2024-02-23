@@ -17,6 +17,9 @@ namespace WFDotNetCoreMysqlCRUD
         //aqui vamos criar as informações para conectar nosso banco
         private MySqlConnection Conexao;
         private string data_source = "datasource=localhost;username=root;password=;database=db_agenda";
+
+        private int ?id_contato_selecionado = null;
+
         public Form1()
         {
             InitializeComponent();
@@ -61,19 +64,28 @@ namespace WFDotNetCoreMysqlCRUD
                 MySqlCommand cmd = new MySqlCommand();
                 cmd.Connection = Conexao;
 
-                cmd.CommandText = "INSERT INTO contato(nome, telefone, email) VALUES (@nome,@telefone,@email)";
+                if(id_contato_selecionado == null)
+                {
+                    cmd.CommandText = "INSERT INTO contato(nome, telefone, email) VALUES (@nome,@telefone,@email)";
 
-                //definir os parametros que vão pro banco
-                cmd.Parameters.AddWithValue("@nome", txtNome.Text);
-                cmd.Parameters.AddWithValue("@telefone", txtTelefone.Text);
-                cmd.Parameters.AddWithValue("@email", txtEmail.Text);
+                    //definir os parametros que vão pro banco
+                    cmd.Parameters.AddWithValue("@nome", txtNome.Text);
+                    cmd.Parameters.AddWithValue("@telefone", txtTelefone.Text);
+                    cmd.Parameters.AddWithValue("@email", txtEmail.Text);
 
-                cmd.Prepare();
+                    cmd.Prepare();
 
-                cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
 
-                //exibindo mensagem ao usuario
-                MessageBox.Show("Contato inserido com sucesso", "Sucesso",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    //exibindo mensagem ao usuario
+                    MessageBox.Show("Contato inserido com sucesso", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    cmd.CommandText = "UPDATE contato SET nome=@nome telefone=@telefone email=@email WHERE id=@id";
+                }
+
+                
 
                 txtNome.Text = string.Empty;
                 txtTelefone.Text = "";
@@ -214,6 +226,21 @@ namespace WFDotNetCoreMysqlCRUD
         private void txt_buscar_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void lst_contatos_ItemSelectionChanged(object sender, EventArgs e)
+        {
+            ListView.SelectedListViewItemCollection itens_selecionados = lst_contatos.SelectedItems;
+
+            foreach (ListViewItem item in itens_selecionados)
+            {
+                id_contato_selecionado = Convert.ToInt32(item.SubItems[0].Text);
+
+                txtNome.Text = item.SubItems[1].Text;
+                txtTelefone.Text = item.SubItems[2].Text;
+                txtEmail.Text = item.SubItems[3].Text;
+
+            }
         }
     }
 }
