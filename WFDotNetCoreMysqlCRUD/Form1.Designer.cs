@@ -29,6 +29,7 @@ namespace WFDotNetCoreMysqlCRUD
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.txtNome = new System.Windows.Forms.TextBox();
             this.txtTelefone = new System.Windows.Forms.TextBox();
             this.txtEmail = new System.Windows.Forms.TextBox();
@@ -37,9 +38,13 @@ namespace WFDotNetCoreMysqlCRUD
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lst_contatos = new System.Windows.Forms.ListView();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.txt_buscar = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtNome
@@ -105,6 +110,7 @@ namespace WFDotNetCoreMysqlCRUD
             // 
             // lst_contatos
             // 
+            this.lst_contatos.ContextMenuStrip = this.contextMenuStrip1;
             this.lst_contatos.HideSelection = false;
             this.lst_contatos.Location = new System.Drawing.Point(352, 77);
             this.lst_contatos.MultiSelect = false;
@@ -114,6 +120,20 @@ namespace WFDotNetCoreMysqlCRUD
             this.lst_contatos.UseCompatibleStateImageBehavior = false;
             this.lst_contatos.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lst_contatos_ItemSelectionChanged);
             this.lst_contatos.SelectedIndexChanged += new System.EventHandler(this.lst_contatos_SelectedIndexChanged);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(156, 26);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(155, 22);
+            this.toolStripMenuItem1.Text = "Excluir Contato";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // txt_buscar
             // 
@@ -143,11 +163,22 @@ namespace WFDotNetCoreMysqlCRUD
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(28, 274);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(100, 23);
+            this.button3.TabIndex = 11;
+            this.button3.Text = "Novo";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(894, 346);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txt_buscar);
@@ -161,6 +192,7 @@ namespace WFDotNetCoreMysqlCRUD
             this.Controls.Add(this.txtNome);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -179,6 +211,9 @@ namespace WFDotNetCoreMysqlCRUD
         private System.Windows.Forms.TextBox txt_buscar;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.Button button3;
     }
 }
 

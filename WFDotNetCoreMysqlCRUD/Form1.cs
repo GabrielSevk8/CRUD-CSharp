@@ -53,14 +53,11 @@ namespace WFDotNetCoreMysqlCRUD
         {
             try
             {
-                   
-
                 // crias a conexão com mysql
                 Conexao = new MySqlConnection(data_source);
 
                 //abrir a conexão
                 Conexao.Open();
-
                 MySqlCommand cmd = new MySqlCommand();
                 cmd.Connection = Conexao;
 
@@ -72,9 +69,7 @@ namespace WFDotNetCoreMysqlCRUD
                     cmd.Parameters.AddWithValue("@nome", txtNome.Text);
                     cmd.Parameters.AddWithValue("@telefone", txtTelefone.Text);
                     cmd.Parameters.AddWithValue("@email", txtEmail.Text);
-
                     cmd.Prepare();
-
                     cmd.ExecuteNonQuery();
 
                     //exibindo mensagem ao usuario
@@ -82,7 +77,15 @@ namespace WFDotNetCoreMysqlCRUD
                 }
                 else
                 {
-                    cmd.CommandText = "UPDATE contato SET nome=@nome telefone=@telefone email=@email WHERE id=@id";
+                    cmd.CommandText = "UPDATE contato SET nome=@nome, telefone=@telefone, email=@email WHERE id=@id";
+                    cmd.Parameters.AddWithValue("@nome", txtNome.Text);
+                    cmd.Parameters.AddWithValue("@telefone", txtTelefone.Text);
+                    cmd.Parameters.AddWithValue("@email", txtEmail.Text);
+                    cmd.Parameters.AddWithValue("@id",id_contato_selecionado);
+
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Contato atualizado com sucesso", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 
@@ -240,7 +243,60 @@ namespace WFDotNetCoreMysqlCRUD
                 txtTelefone.Text = item.SubItems[2].Text;
                 txtEmail.Text = item.SubItems[3].Text;
 
+                //MessageBox.Show("Id Selecionado = " + id_contato_selecionado);
             }
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DialogResult conf = MessageBox.Show("Tem certeza que deseja excluir?", "Excluir Registro", MessageBoxButtons.YesNo);
+
+                if (conf == DialogResult.Yes)
+                {
+                    Conexao = new MySqlConnection(data_source);
+                    Conexao.Open();
+
+                    MySqlCommand cmd = new MySqlCommand();
+
+                    cmd.Connection = Conexao;
+
+                    cmd.CommandText = "DELETE FROM contato WHERE id=@id";
+                    cmd.Parameters.AddWithValue("@id", id_contato_selecionado);
+                    cmd.ExecuteNonQuery();
+                    
+                    MessageBox.Show("Contato excluido com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    CarregarContatos();
+                }
+                else
+                {
+
+                }
+
+            }
+            catch(MySqlException ex)
+            {
+                MessageBox.Show("Error " + ex.Number + "Ocorreu: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Ocorreu" + ex.Message + "Erro: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Conexao.Close();
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            id_contato_selecionado = null;
+
+            txtNome.Text = String.Empty;
+            txtEmail.Text = "";
+            txtTelefone.Text = "";
         }
     }
 }
